@@ -29,7 +29,7 @@ def get_bit_positions(bitboard: int) -> list[int]:
     """
     positions = []
     mask = 1
-    for i in range(64):
+    for _ in range(64):
         if bitboard & mask:
             positions.append(mask)
         mask = mask << 1
@@ -73,5 +73,5 @@ def clear_lines(n: int) -> None:
     """
     LINE_UP = "\033[1A"
     LINE_CLEAR = "\x1b[2K"
-    for i in range(n):
+    for _ in range(n):
         print(LINE_UP, end=LINE_CLEAR)

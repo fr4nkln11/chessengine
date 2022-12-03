@@ -172,9 +172,7 @@ class Board:
         return self.__repr__()
 
     def __eq__(self, other):
-        if self.side != other.side:
-            return False
-        return str(self) == str(other)
+        return False if self.side != other.side else str(self) == str(other)
 
     def __hash__(self):
         """Just hash the bitboards instead of the FEN
@@ -194,7 +192,7 @@ class Board:
             ("black", "knights"),
             ("black", "pawns"),
         ]:
-            hash_str += str(self.board[(side, piece)]) + " "
+            hash_str += f"{str(self.board[side, piece])} "
         return hash(hash_str)
 
     @property
@@ -212,9 +210,7 @@ class Board:
         n = self.piece_count[("black", "knights")]
         p = self.piece_count[("black", "pawns")]
         s = 200 * (K - k) + 9 * (Q - q) + 5 * (R - r) + 3 * (B - b + N - n) + (P - p)
-        if self.side == "white":
-            return s
-        return -s
+        return s if self.side == "white" else -s
 
     @property
     def board_pieces(self):
@@ -266,9 +262,7 @@ class Board:
         """
         Returns the bitboard containing all pieces for the given side
         """
-        if side == "white":
-            return self.all_white
-        return self.all_black
+        return self.all_white if side == "white" else self.all_black
 
     def get_bitboard(self, side: str, piece: str) -> int:
         """
@@ -278,7 +272,7 @@ class Board:
         Raises AttributeError if a bitboard with an invalid name is requested. See above for the bitboard naming
         convention.
         """
-        attrname = side + "_" + piece
+        attrname = f"{side}_{piece}"
         return getattr(self, attrname)
 
     def get_self_piece_bitboard(self, piece: str) -> int:
@@ -335,7 +329,7 @@ class Board:
         """
         Sets the bitboard for the passed arguments to the passed bitboard
         """
-        attrname = side + "_" + piece
+        attrname = f"{side}_{piece}"
         setattr(self, attrname, board)
         self.update_board_state()
 
@@ -446,25 +440,25 @@ class Board:
                         break
                 else:
                     raise ValueError(f"{move} is not a valid move for {side}.")
-            else:
-                if groups[2] is None:
-                    # No rank provided in the SAN
-                    for m in moves:
-                        file = get_file(m[0])
-                        if (
-                            groups[1].upper() == "ABCDEFGH"[file - 1]
-                            and m[1] == end_pos
-                        ):
-                            self.move(start=m[0], end=m[1])
-                            break
-                    else:
-                        raise ValueError(f"{move} is not a valid move for {side}.")
+            elif groups[2] is None:
+                # No rank provided in the SAN
+                for m in moves:
+                    file = get_file(m[0])
+                    if (
+                        groups[1].upper() == "ABCDEFGH"[file - 1]
+                        and m[1] == end_pos
+                    ):
+                        self.move(start=m[0], end=m[1])
+                        break
                 else:
-                    # File and rank both present in the SAN
-                    start_pos = 2 ** coords_to_pos[groups[1].upper() + groups[2]]
-                    if (start_pos, end_pos) not in moves:
-                        raise ValueError(f"{move} is not a valid move for {side}.")
+                    raise ValueError(f"{move} is not a valid move for {side}.")
+            else:
+                # File and rank both present in the SAN
+                start_pos = 2 ** coords_to_pos[groups[1].upper() + groups[2]]
+                if (start_pos, end_pos) in moves:
                     self.move(start=start_pos, end=end_pos)
+                else:
+                    raise ValueError(f"{move} is not a valid move for {side}.")
 
     def make_moves(self, *moves: tuple[int, int]) -> None:
         """
@@ -524,10 +518,7 @@ class Board:
                 return move_gens[(side, piece)](self, position)
         else:
             moves = []
-            if side == self.side:
-                pieces = self.board_pieces
-            else:
-                pieces = self.opponent_pieces
+            pieces = self.board_pieces if side == self.side else self.opponent_pieces
             for side, piece in pieces:
                 positions = get_bit_positions(self.get_bitboard(side, piece))
                 for position in positions:
@@ -555,10 +546,12 @@ class Board:
             )
             self.undo_move()
 
-            if maximize and value >= best_score:
-                best_score = value
-                best_move = move
-            elif not maximize and value <= best_score:
+            if (
+                maximize
+                and value >= best_score
+                or not maximize
+                and value <= best_score
+            ):
                 best_score = value
                 best_move = move
         return best_score, best_move
@@ -595,7 +588,6 @@ class Board:
                 if value >= beta:
                     break
                 alpha = max(alpha, value)
-            return value
         else:
             value = 1000
             moves = self.get_moves(self.opponent_side)
@@ -607,7 +599,8 @@ class Board:
                 if value <= alpha:
                     break
                 beta = min(beta, value)
-            return value
+
+        return value
 
     def play(self, search_depth: int = 4) -> None:
         """
@@ -697,10 +690,7 @@ class Board:
                 print(f"You moved {move}")
                 lines_printed += 1
 
-            if side_to_move == "white":
-                side_to_move = "black"
-            else:
-                side_to_move = "white"
+            side_to_move = "black" if side_to_move == "white" else "white"
 
     def play_pvp(self) -> None:
         """
@@ -743,7 +733,4 @@ class Board:
                     print(e)
                     lines_printed += 1
 
-            if side_to_move == "white":
-                side_to_move = "black"
-            else:
-                side_to_move = "white"
+            side_to_move = "black" if side_to_move == "white" else "white"

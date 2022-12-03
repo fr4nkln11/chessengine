@@ -80,7 +80,7 @@ class PGNParser:
             else:
                 # This is the move text
                 new_game = False
-                move_text += " " + line.strip()
+                move_text += f" {line.strip()}"
         self._parse_move_text(move_text)
 
     def _parse_header(self, header_string: str):

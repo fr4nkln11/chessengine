@@ -43,36 +43,6 @@ class TestBoard(unittest.TestCase):
 
     def test_fen_representation(self):
         return  # Skip this test, FEN representation is deprecated
-        board = Board("white")
-        self.assertEqual(
-            board.FEN,
-            "rnbqkbnr/pppppppp/00000000/00000000/00000000/00000000/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-        )
-
-        board.move(2**8, 2**16)
-        self.assertEqual(
-            board.FEN,
-            "rnbqkbnr/pppppppp/00000000/00000000/00000000/P0000000/0PPPPPPP/RNBQKBNR w KQkq - 0 1",
-        )
-
-        board.move(2**16, 2**8)
-        self.assertEqual(
-            board.FEN,
-            "rnbqkbnr/pppppppp/00000000/00000000/00000000/00000000/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-        )
-
-        board.undo_move()
-        self.assertEqual(
-            board.FEN,
-            "rnbqkbnr/pppppppp/00000000/00000000/00000000/P0000000/0PPPPPPP/RNBQKBNR w KQkq - 0 1",
-        )
-
-        board.move(2**14, 2**54)
-        board.undo_move()
-        self.assertEqual(
-            board.FEN,
-            "rnbqkbnr/pppppppp/00000000/00000000/00000000/P0000000/0PPPPPPP/RNBQKBNR w KQkq - 0 1",
-        )
 
 
 if __name__ == "__main__":
