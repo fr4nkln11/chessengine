@@ -72,7 +72,7 @@ def get_rook_moves(board, side: str, position: int) -> list[int]:
     file = get_file(position)
     max_right = 8 - file
     _ = position
-    for i in range(max_right):
+    for _ in range(max_right):
         # Move right
         _ = _ << 1
         valid, should_break = check_valid_position(board, side, position, _, moves)
@@ -81,7 +81,7 @@ def get_rook_moves(board, side: str, position: int) -> list[int]:
 
     max_left = file - 1
     _ = position
-    for i in range(max_left):
+    for _ in range(max_left):
         # Move left
         _ = _ >> 1
         valid, should_break = check_valid_position(board, side, position, _, moves)
@@ -113,14 +113,14 @@ def get_bishop_moves(board, side: str, position: int) -> list[int]:
     file = get_file(position)
     max_right = 8 - file
     _ = position
-    for i in range(max_right):
+    for _ in range(max_right):
         _ = _ << 9
         valid, should_break = check_valid_position(board, side, position, _, moves)
         if should_break:
             break
 
     _ = position
-    for i in range(max_right):
+    for _ in range(max_right):
         _ = _ >> 7
         valid, should_break = check_valid_position(board, side, position, _, moves)
         if should_break:
@@ -128,14 +128,14 @@ def get_bishop_moves(board, side: str, position: int) -> list[int]:
 
     max_left = file - 1
     _ = position
-    for i in range(max_left):
+    for _ in range(max_left):
         _ = _ << 7
         valid, should_break = check_valid_position(board, side, position, _, moves)
         if should_break:
             break
 
     _ = position
-    for i in range(max_left):
+    for _ in range(max_left):
         _ = _ >> 9
         valid, should_break = check_valid_position(board, side, position, _, moves)
         if should_break:

@@ -50,9 +50,7 @@ class GameNode:
         self.children: dict[str:GameNode] = {}  # Maps SAN move strings to GameNode
 
     def __repr__(self):
-        children = ""
-        for c in self.children:
-            children += " " + c
+        children = "".join(f" {c}" for c in self.children)
         return f"<chessengine.GameNode: {self.turn[0]} - {{{children.strip()}}}>"
 
     def __contains__(self, move: str) -> bool:
